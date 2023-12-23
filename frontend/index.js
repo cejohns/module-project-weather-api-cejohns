@@ -21,15 +21,12 @@ async function moduleProject4() {
 document.getElementById('weatherWidget').style.display = 'none';
 
 // Assuming your dropdown has an id of 'cityDropdown', you should replace it with the actual id
-const cityDropdown = document.getElementById('citySelect');
+//const cityDropdown = document.getElementById('citySelect');
 
 // Adding an event listener for the 'change' event
-cityDropdown.addEventListener('change',async evt => {
+document.querySelector('#citySelect').addEventListener('change',async evt => {
   // Get the selected option
-  const selectedOption = cityDropdown.options[cityDropdown.selectedIndex];
-  const selectedCity = selectedOption.value;
-  // Log the selected city name to the console
-  console.log('Selected city:', selectedOption.value);
+
   try {
    
 
@@ -53,11 +50,10 @@ console.log(weatherApiUrl);
    
     document.querySelector('#weatherWidget').style.display = 'block';
     document.querySelector('.info').textContent = ''
-     document.querySelector('#citySelect').removeAttribute('disabled');
+     evt.target.removeAttribute('disabled');
      // Handle the successful response here
      let { Data }  = response;
-    
-    document.getElementById('#apparentTemp div:nth-child(2)').textContent = `${Data.current.apparent_temperature}°`
+    document.querySelector('#apparentTemp div:nth-child(2)').textContent = `${Data.current.apparent_temperature}°`
     
    
 
@@ -72,13 +68,22 @@ console.log(weatherApiUrl);
      document.querySelector('#todayStatsp.div:nth-child(4)').textContent = `Wind: ${Data.current.wind_speed}m/s`
       console.log(Data.current.apparent_temperature)
 
-    // Extract the emoji for the weather description
-    //const emoji = descriptions.find(([desc]) => desc === weatherData.current.condition.text);
+    /Data.forcast.daily.forEach((day, idx) => {
+      let card = document.querySelector('.next-day')[idx]
 
-      // For example, you can display the temperature
-    document.querySelector('.info').textContent = `Temperature in ${selectedCity}: ${Data.current.temp_c}°C`;
+      let weekDay = card.children[0]
+      let apparent = card.children[1]
+      let minMax = card.children[2]
+      let precipit = card.children[3]
 
+      weekDay.textContent = getDayOfWeek(day.date)
+      apparent.textContent = descriptions.find(d => d[0] === day.weather_description[1])     
     
+    minMax.textContent = `${day.temperature_mib }°/${day.temperature_max}°`
+
+      document.querySelector('#Location').firstElementChild.textContent= Data.location.citySelected
+precipit.textContent = `Precipitation: ${day.precipitation_probability*100}%`
+    })
   }catch(err){
     console.error('Error:', err.message);
   }
@@ -86,7 +91,9 @@ console.log(weatherApiUrl);
 });
 
 
-
+function getDayOfWeek(date) {
+    return date;
+}
 
 
 
